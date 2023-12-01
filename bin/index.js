@@ -30,11 +30,11 @@ async function start() {
 
     const opts = program.opts()
     if (opts.file) {
-        console.log(opts.file)
+        console.log(chalk.bgBlueBright(opts.file))
     }
     const filePath = opts.file
     if (!filePath) {
-        console.error(createBoxedText(chalk.red(" ❌Pass guide file"), 'red'))
+        console.error(createBoxedText(chalk.red("❌ Pass guide file"), 'red'))
         throw new Error("PASS GUIDE FILE")
     }
 
@@ -58,7 +58,7 @@ async function start() {
 
 
     if (platform === 'win32') {
-        console.log(chalk.bgMagentaBright(`Figuring out windows`))
+        console.log(chalk.bgBlueBright(`Figuring out windows`))
     }
 }
 

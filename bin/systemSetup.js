@@ -7,10 +7,11 @@ const Applications = require("./applications")
 const inquirer = require("inquirer")
 const exec = util.promisify(cp.exec)
 const fs = require("fs")
+const chalk = require("chalk")
 const path = require("path")
 
 const dotenv = require('dotenv')
-const chalk = require('chalk')
+
 dotenv.config()
 
 const windowsCheckRequirement = (appn) => {
@@ -57,7 +58,8 @@ class Setup {
                     } catch (error) {
                         if (error) {
 
-                            console.error(`Problem installing ${iterator}`)
+                            console.error(chalk.red(`Problem installing ${iterator}`))
+                            console.error(chalk.yellowBright(error))
                             installerErrors.push({
                                 package: iterator,
                                 errorCommand: command,
@@ -67,6 +69,7 @@ class Setup {
                                 }
                             })
                         }
+                        throw new Error(error)
                     }
                 }
             } else {
@@ -104,10 +107,17 @@ class Setup {
         //creating .env file
 
         const dbUrl = await askForDBUrl()
+        const dbName = await askForDBName()
+        const JWT_SECRET_TOKEN = await getKey('JWT_SECRET_TOKEN');
+        const SESSION_SECRET = await getKey("SESSION_SECRET")
+
+
 
         const configg = dotenv.parse(fs.readFileSync(path.join(__dirname, `../../${sampleEnv}`)))
-
+        configg.JWT_SECRET_TOKEN = SESSION_SECRET
+        configg.SESSION_SECRET = JWT_SECRET_TOKEN
         configg.DB_LINK = dbUrl;
+        configg.DB_NAME = dbName;
 
         let _env = await exec(`touch .env`, {
             cwd: "../oslLogBook"
@@ -115,8 +125,9 @@ class Setup {
 
         fs.writeFileSync(path.join(__dirname, `../../oslLogBook/.env`), "");
         for (const key in configg) {
-            fs.appendFileSync(path.join(__dirname, `../../oslLogBook/.env`), `${key}=${configg[key]}\n`);
-            console.log(chalk.bgBlueBright(`Create ${key}`))
+
+            fs.appendFileSync(path.join(__dirname, `../../oslLogBook/.env`), `${key}='${configg[key]}'\n`);
+            console.log(chalk.bgBlueBright(`Create:`), `${key}`)
         }
 
 
@@ -125,7 +136,7 @@ class Setup {
     }
 
     static async startProject(startCommand) {
-
+        console.log(chalk.blue(`Starting...`))
         let a = await exec(`npm start`, {
             cwd: '../oslLogBook'
         })
@@ -144,6 +155,28 @@ async function askForDBUrl() {
     }, ]);
 
     return url;
+}
+async function askForDBName() {
+    const {
+        url
+    } = await inquirer.prompt([{
+        type: "input",
+        name: "url",
+        message: "Enter your DB name:",
+    }, ]);
+
+    return url;
+}
+
+async function getKey(keyName) {
+    const {
+        keyNam
+    } = await inquirer.prompt([{
+        type: "input",
+        name: keyName,
+        message: `ENTER ${keyName}:`
+    }]);
+    return keyNam
 }
 
 function createBoxedText(text, borderColor = 'white', textColor = 'reset') {

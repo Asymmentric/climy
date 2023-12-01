@@ -1,6 +1,5 @@
 const chalk = require("chalk");
 const Setup = require("./systemSetup")
-
 class Installer {
     static instance;
     static requirements;
@@ -39,6 +38,10 @@ class Installer {
             }
 
             let b = await Setup.installRequirementsLinux()
+            if (b.length > 0) {
+                console.log(chalk.red(`${b.length} packages couldn't install`))
+            }
+
 
             let c = await Setup.cloneRepo(this.repo)
 
