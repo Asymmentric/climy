@@ -34,7 +34,7 @@ async function start() {
     }
     const filePath = opts.file
     if (!filePath) {
-        console.error("Pass guide file")
+        console.error(createBoxedText(chalk.red(" ❌Pass guide file"), 'red'))
         throw new Error("PASS GUIDE FILE")
     }
 
@@ -49,7 +49,7 @@ async function start() {
                 console.log(chalk.blueBright(`....installing packages`))
             }).catch(err => {
                 if (err) {
-                    console.log(chalk.redBright(err))
+                    console.log(createBoxedText(chalk.redBright(err), 'red'))
                 }
             })
     }
@@ -58,8 +58,22 @@ async function start() {
 
 
     if (platform === 'win32') {
-        console.log(`Figuring out windows`)
+        console.log(chalk.bgMagentaBright(`Figuring out windows`))
     }
+}
+
+function createBoxedText(text, borderColor = 'white', textColor = 'reset') {
+    const horizontalLine = chalk[borderColor]('─'.repeat(text.length + 4));
+    const verticalLine = chalk[borderColor]('');
+    const paddedText = chalk[textColor](`${text}  `);
+
+    const boxedText = [
+        horizontalLine,
+        `${verticalLine} ${paddedText} ${verticalLine}`,
+        horizontalLine,
+    ].join('\n');
+
+    return boxedText;
 }
 
 start()

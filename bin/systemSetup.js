@@ -10,6 +10,7 @@ const fs = require("fs")
 const path = require("path")
 
 const dotenv = require('dotenv')
+const chalk = require('chalk')
 dotenv.config()
 
 const windowsCheckRequirement = (appn) => {
@@ -27,11 +28,11 @@ class Setup {
         for (let requirement of requirements) {
             try {
                 let a = await exec(`${requirement} --version`)
-                console.log(`${requirement} --> ${a.stdout}`)
+                console.log(chalk.blue(`${requirement} --> ${a.stdout}`))
 
             } catch (error) {
                 if (error) {
-                    console.error(`Package |${requirement}| not found`)
+                    console.error(createBoxedText(chalk.red(`❌Package |${requirement}| not found`), 'red'))
                     packageToInstall.push(requirement)
                 }
             }
@@ -69,7 +70,7 @@ class Setup {
                     }
                 }
             } else {
-                console.error(`Unknown package ${iterator}`)
+                console.error(createBoxedText(chalk.redBright(`Unknown package ${iterator}`), 'red'))
             }
         }
         this.installerErrors = installerErrors
@@ -77,24 +78,24 @@ class Setup {
     }
 
     static async cloneRepo(repoLink) {
-        console.log(`Cloning Repo...`)
+        console.log(chalk.bgBlueBright(`Cloning Repo...`))
         let a = await exec(`git clone ${repoLink}`, {
             cwd: '../'
         })
-        console.log(`Cloned`)
+        console.log(chalk.bgGreenBright(`Cloned`))
         // console.log(a.stdout)
         return a
     }
 
     static async runSetupInstall(installCommand) {
         let pwd = await exec(`pwd`)
-        console.log(pwd.stdout)
+        console.log(chalk.bgBlueBright(pwd.stdout))
         let a = await exec(`npm i`, {
             cwd: `../oslLogBook`
         })
-        console.log(a.stdout)
+        console.log(chalk.bgBlueBright(a.stdout))
         let b = await exec('pwd')
-        console.log(b.stdout)
+        console.log(chalk.bgBlueBright(b.stdout))
 
         return a
     }
@@ -115,11 +116,11 @@ class Setup {
         fs.writeFileSync(path.join(__dirname, `../../oslLogBook/.env`), "");
         for (const key in configg) {
             fs.appendFileSync(path.join(__dirname, `../../oslLogBook/.env`), `${key}=${configg[key]}\n`);
-            console.log(`Create ${key}`)
+            console.log(chalk.bgBlueBright(`Create ${key}`))
         }
 
 
-        console.log(`Created .env Successfully`)
+        console.log(chalk.bgGreenBright(`Created .env Successfully`))
 
     }
 
@@ -128,7 +129,7 @@ class Setup {
         let a = await exec(`npm start`, {
             cwd: '../oslLogBook'
         })
-        console.log(a.stdout)
+        console.log(chalk.bgBlueBright(a.stdout))
     }
 
 }
@@ -143,6 +144,20 @@ async function askForDBUrl() {
     }, ]);
 
     return url;
+}
+
+function createBoxedText(text, borderColor = 'white', textColor = 'reset') {
+    const horizontalLine = chalk[borderColor]('─'.repeat(text.length + 4));
+    const verticalLine = chalk[borderColor]('');
+    const paddedText = chalk[textColor](`${text}  `);
+
+    const boxedText = [
+        horizontalLine,
+        `${verticalLine} ${paddedText} ${verticalLine}`,
+        horizontalLine,
+    ].join('\n');
+
+    return boxedText;
 }
 
 module.exports = Setup

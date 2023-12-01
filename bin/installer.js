@@ -1,3 +1,4 @@
+const chalk = require("chalk");
 const Setup = require("./systemSetup")
 
 class Installer {
@@ -32,9 +33,9 @@ class Installer {
             let a = await Setup.linuxCheckRequirements(this.requirements)
             if (a.length > 0) {
 
-                console.error(`${a.length} packages remaining.`)
+                console.error(createBoxedText(chalk.red(`${a.length} packages remaining.`), 'red')) //red
             } else {
-                console.log(`All packages already installed`)
+                console.log(chalk.bgGreenBright(`All packages already installed`)) //grean
             }
 
             let b = await Setup.installRequirementsLinux()
@@ -48,7 +49,7 @@ class Installer {
             let f = await Setup.startProject()
         } catch (error) {
             if (error) {
-                console.error(error);
+                console.error(createBoxedText(chalk.redBright(error), 'red'));
 
             }
         }
@@ -59,4 +60,18 @@ class Installer {
     }
 }
 
-module.exports=Installer
+function createBoxedText(text, borderColor = 'white', textColor = 'reset') {
+    const horizontalLine = chalk[borderColor]('─'.repeat(text.length + 4));
+    const verticalLine = chalk[borderColor]('');
+    const paddedText = chalk[textColor](`${text}  `);
+
+    const boxedText = [
+        horizontalLine,
+        `${verticalLine} ${paddedText} ${verticalLine}`,
+        horizontalLine,
+    ].join('\n');
+
+    return boxedText;
+}
+
+module.exports = Installer
