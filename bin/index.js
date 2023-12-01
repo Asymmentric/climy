@@ -13,7 +13,7 @@ const {
 const util = require('util');
 const Installer = require("./installer");
 const chalk= require("chalk");;
-const fs = require("node:fs/promises");
+const fs = require("fs");
 async function start() {
     const exec = util.promisify(cp.exec)
 
@@ -30,7 +30,7 @@ async function start() {
 
     const opts = program.opts()
     if (opts.file) {
-        console.log(opts.file)
+        console.log(chalk.bgBlueBright(opts.file))
     }
     const filePath = opts.file
     if (!filePath) {
@@ -38,7 +38,7 @@ async function start() {
         throw new Error("PASS GUIDE FILE")
     }
 
-    let fileContent = await fs.readFile(filePath)
+    let fileContent = fs.readFileSync(filePath)
     fileContent = JSON.parse(fileContent)
 
     if (platform === 'linux') {
@@ -57,7 +57,7 @@ async function start() {
 
 
     if (platform === 'win32') {
-        console.log(`Figuring out windows`)
+        console.log(chalk.bgBlueBright(`Figuring out windows`))
     }
 }
 

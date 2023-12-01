@@ -7,6 +7,7 @@ const Applications = require("./applications")
 const inquirer = require("inquirer")
 const exec = util.promisify(cp.exec)
 const fs = require("fs")
+const chalk=require("chalk")
 const path = require("path")
 
 const dotenv = require('dotenv')
@@ -56,7 +57,8 @@ class Setup {
                     } catch (error) {
                         if (error) {
 
-                            console.error(`Problem installing ${iterator}`)
+                            console.error(chalk.red(`Problem installing ${iterator}`))
+                            console.error(chalk.yellowBright(error))
                             installerErrors.push({
                                 package: iterator,
                                 errorCommand: command,
@@ -66,6 +68,7 @@ class Setup {
                                 }
                             })
                         }
+                        throw new Error(error)
                     }
                 }
             } else {

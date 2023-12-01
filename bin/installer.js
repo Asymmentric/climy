@@ -1,5 +1,5 @@
 const Setup = require("./systemSetup")
-
+const chalk=require("chalk")
 class Installer {
     static instance;
     static requirements;
@@ -29,9 +29,13 @@ class Installer {
         // check requirements
 
         try {
-            let a = await Setup.linuxCheckRequirements(['npmm', 'mongod'])
+            let a = await Setup.linuxCheckRequirements(this.requirements)
 
             let b = await Setup.installRequirementsLinux()
+            if(b.length>0){
+                console.log(chalk.red(`${b.length} packages couldn't install`))
+            }
+            
 
             let c = await Setup.cloneRepo(this.repo)
 
