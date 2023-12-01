@@ -1,4 +1,4 @@
-const Setup = require("./requirements")
+const Setup =require("./requirements")
 
 class Installer {
     static instance;
@@ -16,4 +16,4 @@ class Installer {
     }
 }
 
-module.exports = Installer
+module.exports=Installer
