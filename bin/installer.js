@@ -59,4 +59,4 @@ class Installer {
     }
 }
 
-module.exports = Installer
+module.exports=Installer
