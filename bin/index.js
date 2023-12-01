@@ -12,12 +12,14 @@ const {
 
 const util = require('util');
 const Installer = require("./installer");
+const chalk= require("chalk");;
 const fs = require("node:fs/promises");
 async function start() {
     const exec = util.promisify(cp.exec)
 
 
-    console.log("okay");
+
+    console.log(chalk.bgGreenBright.blackBright("✅ okay"));
     let a = "NITK"
     const platform = os.platform()
 
@@ -44,13 +46,15 @@ async function start() {
 
         Installer.linuxInstaller(fileContent)
             .then(result => {
-                console.log(`....installing packages`)
+                console.log(chalk.blueBright(`....installing packages`))
             }).catch(err => {
                 if (err) {
-                    console.log(err)
+                    console.log(chalk.redBright(err))
                 }
-            })
-    }
+            })    }
+
+
+
 
     if (platform === 'win32') {
         console.log(`Figuring out windows`)

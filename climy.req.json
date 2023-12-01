@@ -1,0 +1,16 @@
+{
+    "packageName": "oslLogBook",
+    "requirements": ["node", "npm", "mongod"],
+    "repo": "https://github.com/Asymmentric/oslLogBook.git",
+    "setupInstall": ["npm install"],
+    "sampleEnv": "oslLogBook/.env.smaple",
+    "file_modifications": [
+      {
+        "path": "path",
+        "line": 5,
+        "exisiting": "",
+        "replace": "this line",
+        "helperText": "this is helpertext"
+      }
+    ]
+  }
