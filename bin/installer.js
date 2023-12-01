@@ -29,7 +29,13 @@ class Installer {
         // check requirements
 
         try {
-            let a = await Setup.linuxCheckRequirements(['npmm', 'mongod'])
+            let a = await Setup.linuxCheckRequirements(this.requirements)
+            if (a.length > 0) {
+
+                console.error(`${a.length} packages remaining.`)
+            } else {
+                console.log(`All packages already installed`)
+            }
 
             let b = await Setup.installRequirementsLinux()
 

@@ -12,7 +12,7 @@ const {
 
 const util = require('util');
 const Installer = require("./installer");
-const fs = require("node:fs/promises");
+const fs = require("fs");
 async function start() {
     const exec = util.promisify(cp.exec)
 
@@ -36,7 +36,7 @@ async function start() {
         throw new Error("PASS GUIDE FILE")
     }
 
-    let fileContent = await fs.readFile(filePath)
+    let fileContent = fs.readFileSync(filePath)
     fileContent = JSON.parse(fileContent)
 
     if (platform === 'linux') {
